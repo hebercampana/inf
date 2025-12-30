@@ -1,0 +1,515 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Información Municipal - Accesos rápidos</title>
+  <style>
+    :root{
+      --bg:#0b1220;
+      --card:#101a2e;
+      --muted:#90a4c7;
+      --text:#eef4ff;
+      --accent:#00a878; /* verde municipal */
+      --accent2:#2ed3ff;
+      --border:rgba(255,255,255,.10);
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial, "Helvetica Neue", sans-serif;
+      background: radial-gradient(1000px 600px at 20% 0%, rgba(0,168,120,.25), transparent 60%),
+                  radial-gradient(900px 500px at 90% 10%, rgba(46,211,255,.18), transparent 60%),
+                  var(--bg);
+      color:var(--text);
+    }
+    header{
+      padding: 28px 16px 18px;
+      text-align:center;
+    }
+    header h1{
+      margin:0;
+      font-size: clamp(22px, 2.6vw, 32px);
+      letter-spacing:.2px;
+    }
+    header p{
+      margin:10px auto 0;
+      max-width: 920px;
+      color:var(--muted);
+      line-height:1.5;
+      font-size: 14.5px;
+    }
+    .wrap{
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 14px 16px 40px;
+    }
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 12px;
+    }
+    .btn{
+      border: 1px solid var(--border);
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      color: var(--text);
+      padding: 14px 14px;
+      border-radius: 16px;
+      cursor:pointer;
+      text-align:left;
+      box-shadow: var(--shadow);
+      transition: transform .12s ease, border-color .12s ease, background .12s ease;
+      user-select:none;
+    }
+    .btn:hover{
+      transform: translateY(-1px);
+      border-color: rgba(46,211,255,.35);
+      background: linear-gradient(180deg, rgba(46,211,255,.10), rgba(255,255,255,.03));
+    }
+    .btn .kicker{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-weight: 700;
+      font-size: 15px;
+    }
+    .pill{
+      font-size: 12px;
+      padding: 3px 10px;
+      border-radius: 999px;
+      background: rgba(0,168,120,.16);
+      border: 1px solid rgba(0,168,120,.35);
+      color: #bff7e5;
+    }
+    .btn small{
+      display:block;
+      margin-top:8px;
+      color: var(--muted);
+      line-height:1.45;
+      font-size: 13px;
+    }
+
+    .panel{
+      margin-top: 16px;
+      border:1px solid var(--border);
+      border-radius: 18px;
+      background: rgba(16,26,46,.72);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      display:none;
+    }
+    .panel.active{display:block}
+    .panel header{
+      padding: 16px 16px 0;
+      text-align:left;
+    }
+    .panel header h2{
+      margin:0;
+      font-size: 18px;
+    }
+    .toolbar{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      padding: 12px 16px 14px;
+      border-bottom: 1px solid var(--border);
+      align-items:center;
+    }
+    .toolbar input{
+      flex:1;
+      min-width: 220px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.22);
+      color: var(--text);
+      outline:none;
+    }
+    .toolbar input::placeholder{color: rgba(144,164,199,.8)}
+    .chip{
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      color: var(--text);
+      padding: 9px 12px;
+      border-radius: 999px;
+      cursor:pointer;
+      transition: transform .12s ease, border-color .12s ease;
+      font-size: 13.5px;
+      white-space:nowrap;
+    }
+    .chip:hover{
+      transform: translateY(-1px);
+      border-color: rgba(0,168,120,.5);
+    }
+
+    .content{
+      padding: 14px 16px 18px;
+      line-height:1.6;
+      color: #e9f1ff;
+      font-size: 14.5px;
+    }
+    .content h3{
+      margin: 0 0 6px;
+      font-size: 16px;
+    }
+    .content .muted{
+      color: var(--muted);
+      font-size: 13.5px;
+    }
+    .content ul{margin: 8px 0 12px 18px}
+    .content li{margin: 4px 0}
+    .notice{
+      border-left: 4px solid var(--accent);
+      background: rgba(0,168,120,.10);
+      border-top: 1px solid rgba(0,168,120,.25);
+      border-right: 1px solid rgba(0,168,120,.25);
+      border-bottom: 1px solid rgba(0,168,120,.25);
+      padding: 10px 12px;
+      border-radius: 12px;
+      margin: 12px 0;
+      color: #dffaf1;
+    }
+    .row{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top: 10px;
+    }
+    .linkbtn{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(46,211,255,.35);
+      background: rgba(46,211,255,.10);
+      color: var(--text);
+      text-decoration:none;
+      font-weight:600;
+      font-size: 13.5px;
+    }
+    footer{
+      text-align:center;
+      color: rgba(144,164,199,.85);
+      font-size: 12.5px;
+      padding: 16px 16px 30px;
+    }
+    code{background: rgba(255,255,255,.08); padding:2px 6px; border-radius:8px}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Información Municipal – Accesos rápidos</h1>
+    <p>Elegí un tema. Luego podés entrar por sub-botones para ver la información detallada (listo para publicar en GitHub Pages).</p>
+  </header>
+
+  <main class="wrap">
+    <section class="grid" aria-label="Botones principales">
+      <button class="btn" onclick="openPanel('licencias')">
+        <div class="kicker">🚗 Licencia de Conducir <span class="pill">Turnos / Requisitos</span></div>
+        <small>Original, renovaciones, ampliaciones, duplicados, canjes, etc.</small>
+      </button>
+
+      <button class="btn" onclick="openPanel('salud-animal')">
+        <div class="kicker">🐾 Salud Animal <span class="pill">Veterinaria</span></div>
+        <small>Vacunación, desparasitación, castración y requisitos.</small>
+      </button>
+
+      <button class="btn" onclick="openPanel('contactos')">
+        <div class="kicker">☎️ Contactos útiles <span class="pill">0800 / 147</span></div>
+        <small>Líneas y vías de contacto municipal.</small>
+      </button>
+    </section>
+
+    <!-- LICENCIAS -->
+    <section id="licencias" class="panel" aria-label="Panel Licencia de Conducir">
+      <header><h2>🚗 Licencia de Conducir</h2></header>
+      <div class="toolbar">
+        <input id="qLic" placeholder="Buscar (ej.: renovación particular, mayores de 66, canje, duplicado...)" oninput="filterChips('lic', this.value)"/>
+        <button class="chip" data-group="lic" onclick="showItem('lic','original')">Licencia original</button>
+        <button class="chip" data-group="lic" onclick="showItem('lic','renov-part')">Renovación particular</button>
+        <button class="chip" data-group="lic" onclick="showItem('lic','renov-prof')">Renovación profesional</button>
+        <button class="chip" data-group="lic" onclick="showItem('lic','renov-fuerza')">Renov. fuerza pública</button>
+        <button class="chip" data-group="lic" onclick="showItem('lic','mayores-original')">+66 original</button>
+        <button class="chip" data-group="lic" onclick="showItem('lic','mayores-renov')">+66 renovación</button>
+        <button class="chip" data-group="lic" onclick="showItem('lic','alco')">Alcoholemia</button>
+        <button class="chip" data-group="lic" onclick="showItem('lic','ampl-prof')">Ampliación profesional</button>
+        <button class="chip" data-group="lic" onclick="showItem('lic','ampl-part')">Ampliación particular</button>
+        <button class="chip" data-group="lic" onclick="showItem('lic','duplicado')">Duplicado</button>
+        <button class="chip" data-group="lic" onclick="showItem('lic','canje-chile')">Canje Chile</button>
+        <button class="chip" data-group="lic" onclick="showItem('lic','canje-eu')">Canje España/Italia</button>
+        <button class="chip" data-group="lic" onclick="showItem('lic','lnc-digital')">LNC Digital (Interjur.)</button>
+        <button class="chip" data-group="lic" onclick="showItem('lic','asesoria')">Asesoría / impresiones</button>
+      </div>
+
+      <div id="lic-content" class="content">
+        <p class="muted">Tip: elegí un sub-botón para ver el detalle. Podés copiar/pegar el texto en tus plantillas cuando lo necesites.</p>
+
+        <div id="lic-original" class="item">
+          <h3>Licencia original</h3>
+          <div class="notice"><b>Principiante:</b> solicitar turno para el curso de educación vial (lunes y miércoles de 12:00 a 17:00) en la Municipalidad.</div>
+          <div class="notice"><b>Con antigüedad:</b> antes del turno realizar el Curso Nacional de Educación Vial (online) o presencial con turno.</div>
+          <ul>
+            <li>DNI (original y copia).</li>
+            <li>Certificados del/los curso/s correspondientes.</li>
+            <li>Boletas de Tasa Administrativa Municipal y CENAT, con comprobantes de pago impresos.</li>
+            <li>Si hay multas pendientes: comprobantes de regularización.</li>
+          </ul>
+          <p><b>Examen teórico:</b> contenido del Curso Nacional + Compendio de Ley Provincial 9024.</p>
+          <p><b>Prueba de manejo:</b> Lun a Vie 9:00–13:00 en Nave Cultural (Las Cubas entre Mitre y España). Llevar acompañante con licencia vigente + seguro y cédula del vehículo.</p>
+          <p class="muted">Incluye advertencias sobre CENAT, domicilio en Ciudad, deudor/a alimentario, etc.</p>
+        </div>
+
+        <div id="lic-renov-part" class="item" hidden>
+          <h3>Renovación particular</h3>
+          <ul>
+            <li>DNI (original y copia).</li>
+            <li>Licencia anterior.</li>
+            <li>Boletas Tasa Municipal + CENAT con comprobantes impresos.</li>
+            <li>Si hay multas: comprobantes de regularización.</li>
+          </ul>
+          <p class="muted">Importante: verificar datos antes de pagar CENAT; domicilio en Ciudad; requisitos legales vigentes.</p>
+        </div>
+
+        <div id="lic-renov-prof" class="item" hidden>
+          <h3>Renovación profesional</h3>
+          <ul>
+            <li>DNI (original y copia).</li>
+            <li>Licencia anterior.</li>
+            <li>Estudios médicos (hemograma, glucemia, uremia, ECG con informe) + aptitud médica y psicológica/psiquiátrica (validez 90 días).</li>
+            <li>Si categoría D: Certificado de Reincidencia (validez 30 días).</li>
+            <li>Boletas Tasa Municipal + CENAT con pagos impresos.</li>
+          </ul>
+        </div>
+
+        <div id="lic-renov-fuerza" class="item" hidden>
+          <h3>Renovación profesional – Fuerza pública provincial</h3>
+          <ul>
+            <li>DNI (original y copia).</li>
+            <li>Nota del Ministerio de Seguridad que acredite condición de chofer (exime Tasa Municipal).</li>
+            <li>Estudios médicos + aptitudes (90 días).</li>
+            <li>Si categoría D: Certificado de Reincidencia (30 días).</li>
+            <li>Boleta CENAT con pago impreso.</li>
+          </ul>
+        </div>
+
+        <div id="lic-mayores-original" class="item" hidden>
+          <h3>Mayores de 66 (inclusive) – Original</h3>
+          <ul>
+            <li>DNI (original y copia).</li>
+            <li>Certificados del Curso Nacional (incluye Género y Estrellas amarillas) o curso presencial.</li>
+            <li>Estudios médicos (hemograma, glucemia, uremia, ECG con informe + aptitud). Si usa audífono: certificado de grado de hipoacusia.</li>
+            <li>Boletas Tasa Municipal + CENAT con pagos impresos.</li>
+          </ul>
+          <p><b>Teórico:</b> Curso Nacional + Ley Prov. 9024. <b>Manejo:</b> en Nave Cultural según condiciones (acompañante si no tiene licencia o está vencida).</p>
+        </div>
+
+        <div id="lic-mayores-renov" class="item" hidden>
+          <h3>Mayores de 66 (inclusive) – Renovación</h3>
+          <ul>
+            <li>DNI (original y copia).</li>
+            <li>Licencia anterior.</li>
+            <li>Estudios médicos + aptitud (audífono: hipoacusia).</li>
+            <li>Boletas Tasa Municipal + CENAT con pagos impresos.</li>
+          </ul>
+        </div>
+
+        <div id="lic-alco" class="item" hidden>
+          <h3>Alcoholemia – Certificado de Educación Vial</h3>
+          <ul>
+            <li>DNI (original y copia).</li>
+            <li>Resolución del juez vial con constancia de retención de licencia.</li>
+            <li>Certificado de asistencia al curso (lunes y miércoles 12:00 a 17:00).</li>
+            <li>Comprobante de regularización de la multa.</li>
+            <li>Boleta y pago de Tasa Municipal por Certificado de Educación Vial.</li>
+          </ul>
+          <p><b>Teórico:</b> Curso Nacional + Ley Prov. 9024. <b>Manejo:</b> Nave Cultural (con acompañante).</p>
+        </div>
+
+        <div id="lic-ampl-prof" class="item" hidden>
+          <h3>Ampliación profesional</h3>
+          <div class="notice">Requiere 21 años o más y <b>1 año de antigüedad</b> mínima en categoría B1.</div>
+          <ul>
+            <li>DNI (original y copia) + licencia anterior.</li>
+            <li>Certificado del Curso Nacional de Educación Vial (impreso) o presencial.</li>
+            <li>Estudios médicos + aptitudes (90 días).</li>
+            <li>Si categoría D: Certificado de Reincidencia (30 días).</li>
+            <li>Boletas Tasa Municipal + CENAT con pagos impresos.</li>
+          </ul>
+          <p><b>Manejo:</b> Nave Cultural con acompañante + seguro y cédula.</p>
+        </div>
+
+        <div id="lic-ampl-part" class="item" hidden>
+          <h3>Ampliación particular</h3>
+          <ul>
+            <li>DNI (original y copia) + licencia anterior.</li>
+            <li>Boletas Tasa Municipal + CENAT con pagos impresos.</li>
+            <li>Certificados del Curso Nacional (si corresponde teórico).</li>
+            <li>Si hay multas: comprobantes de regularización.</li>
+          </ul>
+          <p><b>Manejo:</b> Nave Cultural con acompañante + seguro y cédula.</p>
+        </div>
+
+        <div id="lic-duplicado" class="item" hidden>
+          <h3>Duplicado (cambio de datos / extravío / robo)</h3>
+          <ul>
+            <li>DNI (original y copia).</li>
+            <li>Licencia a modificar o certificado de extravío/denuncia de robo.</li>
+            <li>Boletas Tasa Municipal + CENAT con pagos impresos.</li>
+            <li>Si hay multas: comprobantes de regularización.</li>
+          </ul>
+          <p class="muted">Si es profesional o +66, se agregan estudios médicos y/o Reincidencia según corresponda.</p>
+        </div>
+
+        <div id="lic-canje-chile" class="item" hidden>
+          <h3>Canje de licencia chilena por argentina</h3>
+          <p><b>Paso previo:</b> solicitar Certificado de Canje (Acuerdo Argentina–Chile) y luego gestionar turno.</p>
+          <ul>
+            <li>DNI (original y copia).</li>
+            <li>Licencia chilena vigente.</li>
+            <li>Certificado de canje emitido por ANSV.</li>
+            <li>Si solicita clase D: antecedentes penales.</li>
+            <li>Boletas Tasa Municipal + CENAT con pagos impresos.</li>
+          </ul>
+        </div>
+
+        <div id="lic-canje-eu" class="item" hidden>
+          <h3>Canje de licencia española/italiana por argentina</h3>
+          <ul>
+            <li>DNI o residencia temporaria con número de DNI asignado (original y copia).</li>
+            <li>Licencia a canjear (vigente).</li>
+            <li>Certificado de legalidad original (traducido al español en caso de Italia).</li>
+            <li>Apostilla de La Haya.</li>
+            <li>Boletas Tasa Municipal + CENAT con pagos impresos.</li>
+          </ul>
+        </div>
+
+        <div id="lic-lnc-digital" class="item" hidden>
+          <h3>Licencia Nacional de Conducir Digital – Categoría Profesional Interjurisdiccional</h3>
+          <p>Iniciar trámite en el portal oficial de LNC Argentina.</p>
+          <div class="row">
+            <a class="linkbtn" href="https://lncargentina.seguridadvial.gob.ar" target="_blank" rel="noopener">Abrir portal LNC Argentina</a>
+            <a class="linkbtn" href="https://youtu.be/T1HXdpfTa9g?si=_EZtveWCBq1FNnQZ" target="_blank" rel="noopener">Ver tutorial</a>
+          </div>
+          <p class="muted">Consultas: ayudalncprofesional@seguridadvial.gob.ar</p>
+        </div>
+
+        <div id="lic-asesoria" class="item" hidden>
+          <h3>Asesoramiento y/o impresiones</h3>
+          <ul>
+            <li>DNI (original).</li>
+            <li>Licencia física (si posee).</li>
+            <li>App Mi Argentina descargada y activa.</li>
+            <li>Número de trámite de Mi Argentina.</li>
+          </ul>
+          <p class="muted">En caso de avanzar en el Centro de Emisión, podrán solicitarse los aranceles correspondientes.</p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SALUD ANIMAL -->
+    <section id="salud-animal" class="panel" aria-label="Panel Salud Animal">
+      <header><h2>🐾 Salud Animal</h2></header>
+      <div class="toolbar">
+        <button class="chip" onclick="showItem('sa','vacunas')">Consultas / Vacunación / Desparasitación</button>
+        <button class="chip" onclick="showItem('sa','castracion')">Castración (requisitos)</button>
+        <button class="chip" onclick="showItem('sa','prep')">Preparación del animal</button>
+        <button class="chip" onclick="showItem('sa','cancelar')">Cancelar turno</button>
+      </div>
+      <div class="content" id="sa-content">
+        <div id="sa-vacunas" class="item">
+          <h3>Consultas, vacunación antirrábica y desparasitación</h3>
+          <ul>
+            <li><b>Centro Veterinario Municipal (La Favorita):</b> lunes y viernes 8:00 a 12:30.</li>
+            <li><b>Móvil Veterinario:</b> lunes a jueves 14:00 (según ubicación del día).</li>
+          </ul>
+        </div>
+
+        <div id="sa-castracion" class="item" hidden>
+          <h3>Requisitos para castración</h3>
+          <ul>
+            <li>Acreditar domicilio en Ciudad (DNI / contrato / boleta municipal a nombre del titular del turno).</li>
+            <li>Edades: <b>gatos</b> desde 5 meses; <b>perros</b> desde 6 meses; hasta 5 años.</li>
+            <li>Asistir a las 14:00 para preparación.</li>
+            <li>Transporte seguro: perros con correa y bozal; gatos en canil o caja.</li>
+            <li>Turno intransferible, se atiende solo acreditando domicilio en Ciudad.</li>
+          </ul>
+          <div class="notice"><b>No se castra</b> en casos de: sobrepeso/caquexia, perras en celo, patologías preexistentes, y razas braquiocefálicas con problemas respiratorios (bulldog, pekinés, bóxer, etc.).</div>
+          <p class="muted">La realización de la cirugía queda a criterio del profesional a cargo.</p>
+        </div>
+
+        <div id="sa-prep" class="item" hidden>
+          <h3>Preparación del animal</h3>
+          <div class="notice">Ayuno: <b>8 horas</b> de sólidos y líquidos.</div>
+        </div>
+
+        <div id="sa-cancelar" class="item" hidden>
+          <h3>Si no podés asistir</h3>
+          <p>Cancelar el turno llamando al <b>147</b> o escribiendo a <b>contacto@ciudaddemendoza.gov.ar</b>.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACTOS -->
+    <section id="contactos" class="panel" aria-label="Panel Contactos">
+      <header><h2>☎️ Contactos útiles</h2></header>
+      <div class="content">
+        <ul>
+          <li><b>0800-222-CIUDAD (248323):</b> consultas, reclamos y sugerencias (24/7).</li>
+          <li><b>147:</b> trámites y servicios específicos (turnos, licencias, salud, etc.).</li>
+          <li><b>Urgencias (Preventores):</b> 461-5555.</li>
+          <li><b>Urgencias (Tránsito):</b> 449-5306.</li>
+          <li><b>Email:</b> contacto@ciudaddemendoza.gob.ar</li>
+        </ul>
+        <p class="muted">Nota: Podés agregar aquí tus botones de “Servicios Públicos”, “Turismo”, “Cultura”, etc., copiando el mismo formato de paneles.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    Hecho para GitHub Pages. Guardá este archivo como <code>index.html</code> en tu repositorio y listo.
+  </footer>
+
+  <script>
+    function openPanel(id){
+      // hide all panels
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      // show target
+      const panel = document.getElementById(id);
+      if(panel){
+        panel.classList.add('active');
+        // scroll into view for mobile
+        panel.scrollIntoView({behavior:'smooth', block:'start'});
+      }
+    }
+
+    function hideAllItems(prefix){
+      document.querySelectorAll('[id^="'+prefix+'-"]').forEach(el=>{
+        if(el.classList.contains('item')){
+          el.hidden = true;
+        }
+      });
+    }
+
+    function showItem(prefix, key){
+      hideAllItems(prefix);
+      const el = document.getElementById(prefix+'-'+key);
+      if(el){ el.hidden = false; }
+    }
+
+    function filterChips(group, query){
+      query = (query||'').toLowerCase().trim();
+      const chips = document.querySelectorAll('.chip[data-group="'+group+'"]');
+      chips.forEach(ch=>{
+        const t = ch.textContent.toLowerCase();
+        ch.style.display = (!query || t.includes(query)) ? 'inline-flex' : 'none';
+      });
+    }
+
+    // Default: open Licencias for quick testing
+    openPanel('licencias');
+  </script>
+</body>
+</html>
