@@ -1,0 +1,511 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Información Municipal – Ciudad de Mendoza</title>
+  <style>
+    :root{
+      --bg:#0b1220;
+      --card:#101a2e;
+      --muted:#90a4c7;
+      --text:#eef4ff;
+      --accent:#00a878;
+      --accent2:#2ed3ff;
+      --border:rgba(255,255,255,.10);
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Arial,sans-serif;
+      background: radial-gradient(1000px 600px at 20% 0%, rgba(0,168,120,.25), transparent 60%),
+                  radial-gradient(900px 500px at 90% 10%, rgba(46,211,255,.18), transparent 60%),
+                  var(--bg);
+      color:var(--text);
+    }
+    header{padding:28px 16px 18px;text-align:center;}
+    header h1{margin:0;font-size:clamp(22px,2.6vw,32px);}
+    header p{margin:10px auto 0;max-width:920px;color:var(--muted);line-height:1.5;font-size:14.5px;}
+    .wrap{max-width:1080px;margin:0 auto;padding:14px 16px 40px;}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;}
+    .btn{
+      border:1px solid var(--border);
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      color:var(--text);
+      padding:14px;
+      border-radius:16px;
+      cursor:pointer;
+      text-align:left;
+      box-shadow:var(--shadow);
+      transition: transform .12s ease, border-color .12s ease, background .12s ease;
+    }
+    .btn:hover{transform:translateY(-1px);border-color:rgba(46,211,255,.35);background:linear-gradient(180deg, rgba(46,211,255,.10), rgba(255,255,255,.03));}
+    .btn .kicker{display:flex;align-items:center;gap:10px;font-weight:700;font-size:15px;}
+    .pill{font-size:12px;padding:3px 10px;border-radius:999px;background:rgba(0,168,120,.16);border:1px solid rgba(0,168,120,.35);color:#bff7e5;}
+    .btn small{display:block;margin-top:8px;color:var(--muted);line-height:1.45;font-size:13px;}
+    .panel{margin-top:16px;border:1px solid var(--border);border-radius:18px;background:rgba(16,26,46,.72);box-shadow:var(--shadow);overflow:hidden;display:none;}
+    .panel.active{display:block;}
+    .panel header{padding:16px 16px 0;text-align:left;}
+    .panel header h2{margin:0;font-size:18px;}
+    .toolbar{display:flex;gap:10px;flex-wrap:wrap;padding:12px 16px 14px;border-bottom:1px solid var(--border);align-items:center;}
+    .toolbar input{flex:1;min-width:220px;padding:10px 12px;border-radius:12px;border:1px solid rgba(255,255,255,.14);background:rgba(0,0,0,.22);color:var(--text);outline:none;}
+    .toolbar input::placeholder{color:rgba(144,164,199,.8)}
+    .chip{border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.06);color:var(--text);padding:9px 12px;border-radius:999px;cursor:pointer;transition:transform .12s ease, border-color .12s ease;font-size:13.5px;white-space:nowrap;}
+    .chip:hover{transform:translateY(-1px);border-color:rgba(0,168,120,.5);}
+    .content{padding:14px 16px 18px;line-height:1.6;color:#e9f1ff;font-size:14.5px;}
+    .content h3{margin:0 0 6px;font-size:16px;}
+    .content h4{margin:12px 0 6px;font-size:14.5px;color:#dffaf1;}
+    .content p{margin:8px 0;}
+    .content ul{margin:8px 0 12px 18px;}
+    .content li{margin:4px 0;}
+    .muted{color:var(--muted);font-size:13.5px;}
+    .notice{border-left:4px solid var(--accent);background:rgba(0,168,120,.10);border:1px solid rgba(0,168,120,.25);padding:10px 12px;border-radius:12px;margin:12px 0;color:#dffaf1;}
+    .row{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;}
+    .linkbtn{display:inline-flex;align-items:center;gap:8px;padding:10px 12px;border-radius:12px;border:1px solid rgba(46,211,255,.35);background:rgba(46,211,255,.10);color:var(--text);text-decoration:none;font-weight:600;font-size:13.5px;}
+    footer{text-align:center;color:rgba(144,164,199,.85);font-size:12.5px;padding:16px 16px 30px;}
+    code{background: rgba(255,255,255,.08); padding:2px 6px; border-radius:8px}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Información Municipal</h1>
+    <p>Accesos rápidos a trámites y servicios – Ciudad de Mendoza</p>
+  </header>
+
+  <main class="wrap">
+    <section class="grid" aria-label="Botones principales">
+      <button class="btn" onclick="openPanel('licencias')">
+        <div class="kicker">🚗 Licencia de Conducir <span class="pill">Plantillas 2025</span></div>
+        <small>Requisitos completos según las plantillas oficiales.</small>
+      </button>
+
+      <button class="btn" onclick="openPanel('salud-animal')">
+        <div class="kicker">🐾 Salud Animal <span class="pill">Castración</span></div>
+        <small>Requisitos y condiciones del servicio.</small>
+      </button>
+
+      <button class="btn" onclick="openPanel('cam')">
+        <div class="kicker">🏛️ CAM y Puntos de Cercanía <span class="pill">Direcciones</span></div>
+        <small>Ubicaciones, horarios y teléfonos.</small>
+      </button>
+
+      <button class="btn" onclick="openPanel('contactos')">
+        <div class="kicker">☎️ Contactos útiles <span class="pill">147 / 0800</span></div>
+        <small>Líneas y vías de contacto municipal.</small>
+      </button>
+    </section>
+
+    <!-- LICENCIAS -->
+    <section id="licencias" class="panel" aria-label="Panel Licencia de Conducir">
+      <header><h2>🚗 Licencia de Conducir (Plantillas 2025)</h2></header>
+      <div class="toolbar">
+        <input id="qLic" placeholder="Buscar (ej.: renovación, mayores de 66, canje, duplicado...)" oninput="filterChips('lic', this.value)"/>
+        <button class="chip" data-group="lic" onclick="showItem('lic','original')">Licencia original</button>
+        <button class="chip" data-group="lic" onclick="showItem('lic','renov-part')">Renovación particular</button>
+        <button class="chip" data-group="lic" onclick="showItem('lic','renov-prof')">Renovación profesional</button>
+        <button class="chip" data-group="lic" onclick="showItem('lic','renov-fuerza')">Renov. fuerza pública</button>
+        <button class="chip" data-group="lic" onclick="showItem('lic','mayores-original')">+66 original</button>
+        <button class="chip" data-group="lic" onclick="showItem('lic','mayores-renov')">+66 renovación</button>
+        <button class="chip" data-group="lic" onclick="showItem('lic','alco')">Alcoholemia</button>
+        <button class="chip" data-group="lic" onclick="showItem('lic','ampl-prof')">Ampliación profesional</button>
+        <button class="chip" data-group="lic" onclick="showItem('lic','ampl-prof-fuerza')">Ampl. prof. fuerza pública</button>
+        <button class="chip" data-group="lic" onclick="showItem('lic','ampl-prof-porte')">Ampl. gran porte/maquinaria</button>
+        <button class="chip" data-group="lic" onclick="showItem('lic','ampl-part')">Ampliación particular</button>
+        <button class="chip" data-group="lic" onclick="showItem('lic','duplicado')">Duplicado</button>
+        <button class="chip" data-group="lic" onclick="showItem('lic','canje-chile')">Canje Chile</button>
+        <button class="chip" data-group="lic" onclick="showItem('lic','canje-eu')">Canje España/Italia</button>
+        <button class="chip" data-group="lic" onclick="showItem('lic','lnc-digital')">LNC Digital (Interjur.)</button>
+        <button class="chip" data-group="lic" onclick="showItem('lic','asesoria')">Asesoramiento/impresiones</button>
+      </div>
+
+      <div class="content" id="lic-content">
+        <p class="muted">Elegí un sub-botón para ver el detalle completo.</p>
+
+        <div id="lic-original" class="item">
+  <h3>Licencia Original</h3>
+  <p>Asunto: Licencia de conducir - Ciudad de Mendoza</p>
+<p>(Principiante)</p>
+<p>Antes de realizar el trámite, deberás solicitar turno para el curso de educación vial que se dicta los días lunes y miércoles de 12:00 a 17:00h en la Municipalidad de la Ciudad de Mendoza.</p>
+<p>(Con antigüedad)</p>
+<p>Previo al turno deberás realizar el  Curso Nacional de Educación Vial al que podrás acceder aquí: https://curso.seguridadvial.gob.ar/ansv/  o de forma presencial, con turno,  los días lunes o miércoles de 12:00 a 17:00h, en la  Municipalidad de la Ciudad de Mendoza .</p>
+<p>Su turno es el día //2025 a las 00:00hs. en la Municipalidad de la Ciudad de Mendoza , 9 de Julio 500 - Ciudad.</p>
+<h4>Documentación a presentar</h4>
+<ul><li>Original y copia del DNI</li><li>Certificado/s impreso/s de asistencia al/los curso/s Curso Nacional de Educación Vial (incluidos Género y Estrellas amarillas) o comprobante de asistencia al curso presencial.</li><li>Boleta adjunta de  Tasa Administrativa Municipal y CENAT (Este lo recibirá en otro mail, bajo el asunto: BOLETA DE PAGO), con comprobantes de pago todo impreso.</li></ul>
+<p>IMPORTANTE: Antes de abonar el boleto de pago Cenat, verificar que los datos sean exactamente iguales a los de su documento de identidad, de haber errores, este no podrá utilizarse y lo deberá volver a abonar.</p>
+<ul><li>Si se le informaron multas pendientes, presentar original y copia de comprobantes de regularización.</li><li>Certificado/s impreso/s de asistencia al/los curso/s según corresponda:</li></ul>
+<p>Principiante: Curso presencial de educación vial.</p>
+<p>Original NO principiante: Curso presencial u Online de educación vial. Si realiza la alternativa online son 3 certificados (Ed. vial, Estrellas amarillas y Género).</p>
+<h4>Examen teórico</h4>
+<p>Se evaluará el contenido del Curso Nacional y el del  Compendio de Ley Provincial 9024</p>
+<h4>Prueba de manejo</h4>
+<ul><li>Lun a Vier de 9:00 a 13:00hs en Nave Cultural (calle Las cubas entre Mitre y España).</li><li>Deberá concurrir con un acompañante con licencia vigente.</li><li>Presentar original y copia de seguro al día y cédula de identificación del vehículo.</li></ul>
+<h4>IMPORTANTE</h4>
+<ul><li>Si padece alguna enfermedad crónica o discapacidad, presentar certificado de aptitud emitido por el médico especialista.</li><li>La gestión de su licencia sólo procederá si posee en su último documento domicilio en la Ciudad de Mendoza.</li><li>El arancel CENAT puede demorar hasta 72 hs hábiles en la acreditación según el medio de pago y, sin ello, no procederá el trámite. Mercado Pago y Pago Fácil, hasta el momento, acreditan en el acto. Además, una vez pagado, tiene validez por 60 días.</li><li>Se sugiere no utilizar la opción de pago 360, por demoras en la acreditación.</li><li>Dando cumplimiento a la ordenanza municipal 3967 adhiriendo a la Ley provincial 6879 y su modificatoria Ley 8326 si la persona se encuentra registrada como deudor/a alimentario no podremos emitir licencia de conducir hasta regularizar la situación.</li><li>Según la Ley Nacional 24.449, todo conductor debe poseer la capacidad de leer (en caso de categorías particulares) y escribir (en caso de profesionales).</li><li>MODIFICACIÓN DE DATOS: Según Art. 18 - Ley Nacional N° 24.449 la lic. de conducir que presente diferencias de datos en relación a su DNI pasados los 90 días de realizado dicho cambio, el solicitante debe rendir examen teórico, como así también examen de idoneidad conductiva.</li></ul>
+</div>
+
+<div id="lic-renov-part" class="item" hidden>
+  <h3>Renovación particular</h3>
+  <p>Asunto: Licencia de conducir - Ciudad de Mendoza</p>
+<p>Su turno es el día //2025 a las 00:00hs. en la Municipalidad de la Ciudad de Mendoza , 9 de Julio 500 - Ciudad.</p>
+<h4>Documentación a presentar</h4>
+<ul><li>Original y copia del DNI</li><li>Licencia anterior a renovar.</li><li>Boleta adjunta de  Tasa Administrativa Municipal y CENAT (Este lo recibirá en otro mail, bajo el asunto: BOLETA DE PAGO), con comprobantes de pago todo impreso.</li></ul>
+<p>IMPORTANTE: Antes de abonar el boleto de pago Cenat, verificar que los datos sean exactamente iguales a los de su documento de identidad, de haber errores, este no podrá utilizarse y lo deberá volver a abonar.</p>
+<ul><li>Si se le informaron multas pendientes, presentar original y copia de comprobantes de regularización.</li></ul>
+<h4>IMPORTANTE</h4>
+<ul><li>Si padece alguna enfermedad crónica o discapacidad, presentar certificado de aptitud emitido por el médico especialista.</li><li>La gestión de su licencia sólo procederá si posee en su último documento domicilio en la Ciudad de Mendoza.</li><li>El arancel CENAT puede demorar hasta 72 hs hábiles en la acreditación según el medio de pago y, sin ello, no procederá el trámite. Mercado Pago y Pago Fácil, hasta el momento, acreditan en el acto. Además, una vez pagado, tiene validez por 60 días.</li><li>Se sugiere no utilizar la opción de pago 360, por demoras en la acreditación.</li><li>Dando cumplimiento a la ordenanza municipal 3967 adhiriendo a la Ley provincial 6879 y su modificatoria Ley 8326 si la persona se encuentra registrada como deudor/a alimentario no podremos emitir licencia de conducir hasta regularizar la situación.</li><li>Según la Ley Nacional 24.449, todo conductor debe poseer la capacidad de leer (en caso de categorías particulares) y escribir (en caso de profesionales).</li><li>MODIFICACIÓN DE DATOS: Según Art. 18 - Ley Nacional N° 24.449 la lic. de conducir que presente diferencias de datos en relación a su DNI pasados los 90 días de realizado dicho cambio, el solicitante debe rendir examen teórico, como así también examen de idoneidad conductiva.</li></ul>
+</div>
+
+<div id="lic-renov-prof" class="item" hidden>
+  <h3>Renovación profesional</h3>
+  <p>Asunto: Licencia de conducir - Ciudad de Mendoza</p>
+<p>Su turno es el día //2025 a las 00:00hs. en la Municipalidad de la Ciudad de Mendoza , 9 de Julio 500 - Ciudad.</p>
+<h4>Documentación a presentar</h4>
+<ul><li>Original y copia del DNI</li><li>Licencia anterior</li><li>Estudios médicos (hemograma, glucemia, uremia, electrocardiograma con informe y certificados de aptitud médica y psicológica o psiquiátrica para conducir). Validez 90 días.</li><li>Si tiene categoría D para transporte de pasajeros, Certificado de Reincidencia (antecedentes penales) impreso. Validez 30 días.</li><li>Boleta adjunta de  Tasa Administrativa Municipal y CENAT (Este lo recibirá en otro mail, bajo el asunto: BOLETA DE PAGO), con comprobantes de pago todo impreso.</li></ul>
+<p>IMPORTANTE: Antes de abonar el boleto de pago Cenat, verificar que los datos sean exactamente iguales a los de su documento de identidad, de haber errores, este no podrá utilizarse y lo deberá volver a abonar.</p>
+<ul><li>Si se le informaron multas pendientes, presentar original y copia de comprobantes de regularización.</li></ul>
+<h4>IMPORTANTE</h4>
+<ul><li>Si padece alguna enfermedad crónica o discapacidad, presentar certificado de aptitud emitido por el médico especialista.</li><li>La gestión de su licencia sólo procederá si posee en su último documento domicilio en la Ciudad de Mendoza.</li><li>El arancel CENAT puede demorar hasta 72hs hábiles en la acreditación según el medio de pago y, sin ello, no procederá el trámite. Mercado Pago y Pago Fácil, hasta el momento, acreditan en el acto. Además, una vez pagado, tiene validez por 60 días.</li><li>Se sugiere no utilizar la opción de pago 360, por demoras en la acreditación.</li><li>Dando cumplimiento a la ordenanza municipal 3967 adhiriendo a la Ley provincial 6879 y su modificatoria Ley 8326 si la persona se encuentra registrada como deudor/a alimentario no podremos emitir licencia de conducir hasta regularizar la situación.</li><li>Según la Ley Nacional 24.449, todo conductor debe poseer la capacidad de leer (en caso de categorías particulares) y escribir (en caso de profesionales).</li><li>MODIFICACIÓN DE DATOS: Según Art. 18 - Ley Nacional N° 24.449 la lic. de conducir que presente diferencias de datos en relación a su DNI pasados los 90 días de realizado dicho cambio, el solicitante debe rendir examen teórico, como así también examen de idoneidad conductiva.</li></ul>
+</div>
+
+<div id="lic-renov-fuerza" class="item" hidden>
+  <h3>Renovación profesional fuerza pública provincial</h3>
+  <p>Asunto: Licencia de conducir - Ciudad de Mendoza</p>
+<p>Su turno es el día //2025 a las 00:00hs. en la Municipalidad de la Ciudad de Mendoza , 9 de Julio 500 - Ciudad.</p>
+<h4>Documentación a presentar</h4>
+<ul><li>Original y copia del DNI</li><li>Nota del Ministerio de Seguridad que acredite que es chofer de las fuerzas de seguridad. Esto lo exime de la Tasa Administrativa Municipal.</li><li>Estudios médicos (hemograma, glucemia, uremia, electrocardiograma con informe y certificados de aptitud médica y psicológica o psiquiátrica para conducir). Validez 90 días.</li><li>Si tiene categoría “D” (transporte de pasajeros), presentar Certificado de Reincidencia (antecedentes penales) impreso. Validez 30 días.</li><li>Boleta CENAT (Este lo recibirá en otro mail, bajo el asunto: BOLETA DE PAGO), con comprobante de pago todo impreso.</li></ul>
+<p>IMPORTANTE: Antes de abonar el boleto de pago Cenat, verificar que los datos sean exactamente iguales a los de su documento de identidad, de haber errores, este no podrá utilizarse y lo deberá volver a abonar.</p>
+<ul><li>Si se le informaron multas pendientes, presentar original y copia de comprobantes de regularización.</li></ul>
+<h4>IMPORTANTE</h4>
+<ul><li>Si padece alguna enfermedad crónica o discapacidad, presentar certificado de aptitud emitido por el médico especialista.</li><li>La gestión de su licencia solo procederá si posee en su último documento domicilio en la Ciudad de Mendoza.</li><li>El arancel CENAT puede demorar hasta 72hs hábiles en la acreditación según el medio de pago y, sin ello, no procederá el trámite. Mercado Pago y Pago Fácil, hasta el momento, acreditan en el acto. Además, una vez pagado, tiene validez por 60 días.</li><li>Se sugiere no utilizar la opción de pago 360, por demoras en la acreditación.</li><li>Dando cumplimiento a la ordenanza municipal 3967 adhiriendo a la Ley provincial 6879 y su modificatoria Ley 8326 si la persona se encuentra registrada como deudor/a alimentario no podremos emitir licencia de conducir hasta regularizar la situación.</li><li>Según la Ley Nacional 24.449, todo conductor debe poseer la capacidad de leer (en caso de categorías particulares) y escribir (en caso de profesionales).</li><li>MODIFICACIÓN DE DATOS: Según Art. 18 - Ley Nacional N° 24.449 la lic. de conducir que presente diferencias de datos en relación a su DNI pasados los 90 días de realizado dicho cambio, el solicitante debe rendir examen teórico, como así también examen de idoneidad conductiva.</li></ul>
+</div>
+
+<div id="lic-mayores-original" class="item" hidden>
+  <h3>Mayores de 66, inclusive (Original)</h3>
+  <p>Asunto: Licencia de conducir - Ciudad de Mendoza</p>
+<p>Previo al turno deberás realizar el  Curso Nacional de Educación Vial al que podrás acceder aquí: https://curso.seguridadvial.gob.ar/ansv/  o de forma presencial, con turno, los días lunes o miércoles de 12:00 a 17:00h, en la  Municipalidad de la Ciudad de Mendoza .</p>
+<p>Su turno es el día //2025 a las 08:00hs. en la Municipalidad de la Ciudad de Mendoza , 9 de Julio 500 - Ciudad.</p>
+<h4>Documentación a presentar</h4>
+<ul><li>Original y copia del DNI</li><li>Certificado/s impreso/s de asistencia al/los curso/s Curso Nacional de Educación Vial (incluidos Género y Estrellas amarillas) o comprobante de asistencia al curso presencial.</li><li>Estudios médicos (hemograma, glucemia, uremia, electrocardiograma con informe y certificado médico de aptitud para conducir). En caso de utilizar audífono, debe agregar certificado de grado de hipoacusia.</li><li>Boleta adjunta de  Tasa Administrativa Municipal y CENAT (Este lo recibirá en otro mail, bajo el asunto: BOLETA DE PAGO), con comprobantes de pago todo impreso.</li></ul>
+<p>IMPORTANTE: Antes de abonar el boleto de pago Cenat, verificar que los datos sean exactamente iguales a los de su documento de identidad, de haber errores, este no podrá utilizarse y lo deberá volver a abonar.</p>
+<ul><li>Si se le informaron multas pendientes, presentar original y copia de comprobantes de regularización.</li></ul>
+<h4>Examen teórico</h4>
+<p>Se evaluará el contenido del Curso Nacional y el del  Compendio de Ley Provincial 9024</p>
+<h4>Prueba de manejo</h4>
+<ul><li>Lun a Vier de 9:00 a 13:00hs en Nave Cultural (calle Las cubas entre Mitre y España).</li><li>Si no tiene licencia o la misma se encuentra vencida, deberá concurrir con un acompañante con licencia vigente.</li><li>Presentar original y copia de seguro al día y cédula de identificación del vehículo.</li></ul>
+<h4>IMPORTANTE</h4>
+<ul><li>Si padece alguna enfermedad crónica o discapacidad, presentar certificado de aptitud emitido por el médico especialista.</li><li>La gestión de su licencia sólo procederá si posee en su último documento domicilio en la Ciudad de Mendoza.</li><li>El arancel CENAT puede demorar hasta 72hs hábiles en la acreditación según el medio de pago y, sin ello, no procederá el trámite. Mercado Pago y Pago Fácil, hasta el momento, acreditan en el acto. Además, una vez pagado, tiene validez por 60 días.</li><li>Se sugiere no utilizar la opción de pago 360, por demoras en la acreditación.</li><li>Dando cumplimiento a la ordenanza municipal 3967 adhiriendo a la Ley provincial 6879 y su modificatoria Ley 8326 si la persona se encuentra registrada como deudor/a alimentario no podremos emitir licencia de conducir hasta regularizar la situación.</li><li>Según la Ley Nacional 24.449, todo conductor debe poseer la capacidad de leer (en caso de categorías particulares) y escribir (en caso de profesionales).</li><li>MODIFICACIÓN DE DATOS: Según Art. 18 - Ley Nacional N° 24.449 la lic. de conducir que presente diferencias de datos en relación a su DNI pasados los 90 días de realizado dicho cambio, el solicitante debe rendir examen teórico, como así también examen de idoneidad conductiva.</li></ul>
+</div>
+
+<div id="lic-mayores-renov" class="item" hidden>
+  <h3>Mayores de 66, inclusive (Renovación)</h3>
+  <p>Asunto: Licencia de conducir - Ciudad de Mendoza</p>
+<p>Su turno es el día //2025 a las 08:00hs. en la Municipalidad de la Ciudad de Mendoza , 9 de Julio 500 - Ciudad.</p>
+<h4>Documentación a presentar</h4>
+<ul><li>Original y copia del DNI</li><li>Licencia anterior</li><li>Estudios médicos (hemograma, glucemia, uremia, electrocardiograma con informe y certificado médico de aptitud para conducir). En caso de utilizar audífono, debe agregar certificado de grado de hipoacusia.</li><li>Boleta adjunta de  Tasa Administrativa Municipal y CENAT (Este lo recibirá en otro mail, bajo el asunto: BOLETA DE PAGO), con comprobantes de pago todo impreso.</li></ul>
+<p>IMPORTANTE: Antes de abonar el boleto de pago Cenat, verificar que los datos sean exactamente iguales a los de su documento de identidad, de haber errores, este no podrá utilizarse y lo deberá volver a abonar.</p>
+<ul><li>Si se le informaron multas pendientes, presentar original y copia de comprobantes de regularización.</li></ul>
+<h4>IMPORTANTE</h4>
+<ul><li>Si padece alguna enfermedad crónica o discapacidad, presentar certificado de aptitud emitido por el médico especialista.</li><li>La gestión de su licencia sólo procederá si posee en su último documento domicilio en la Ciudad de Mendoza.</li><li>El arancel CENAT puede demorar hasta 72hs hábiles en la acreditación según el medio de pago y, sin ello, no procederá el trámite. Mercado Pago y Pago Fácil, hasta el momento, acreditan en el acto. Además, una vez pagado, tiene validez por 60 días.</li><li>Se sugiere no utilizar la opción de pago 360, por demoras en la acreditación.</li><li>Dando cumplimiento a la ordenanza municipal 3967 adhiriendo a la Ley provincial 6879 y su modificatoria Ley 8326 si la persona se encuentra registrada como deudor/a alimentario no podremos emitir licencia de conducir hasta regularizar la situación.</li><li>Según la Ley Nacional 24.449, todo conductor debe poseer la capacidad de leer (en caso de categorías particulares) y escribir (en caso de profesionales).</li><li>MODIFICACIÓN DE DATOS: Según Art. 18 - Ley Nacional N° 24.449 la lic. de conducir que presente diferencias de datos en relación a su DNI pasados los 90 días de realizado dicho cambio, el solicitante debe rendir examen teórico, como así también examen de idoneidad conductiva.</li></ul>
+</div>
+
+<div id="lic-alco" class="item" hidden>
+  <h3>Alcoholemia. Certificado de Educación Viál</h3>
+  <p>Asunto: Licencia de conducir - Ciudad de Mendoza</p>
+<p>Antes de realizar el trámite, deberás solicitar turno para el curso de educación vial que se dicta los días lunes y miércoles de 12:00 a 17:00h en la Municipalidad de la Ciudad de Mendoza.</p>
+<p>Su turno es el día //2025 a las 00:00hs. en la Municipalidad de la Ciudad de Mendoza , 9 de Julio 500 - Ciudad.</p>
+<h4>Documentación a presentar</h4>
+<ul><li>Original y copia del DNI.</li><li>Resolución del juez vial con constancia de retención de licencia de conducir.</li><li>Certificado de asistencia al curso.</li><li>Presentar original y copia de comprobante de regularización de la multa por alcoholemia</li><li>Boleta adjunta y comprobante de pago impresos de Tasa Administrativa Municipal por Certificado de Educación Viál.</li></ul>
+<h4>Examen teórico</h4>
+<p>Se evaluará el contenido del Curso Nacional y el del Compendio de Ley Provincial 9024.</p>
+<h4>Prueba de manejo</h4>
+<ul><li>Lun a Vier de 9:00 a 13:00hs en Nave Cultural (calle Las cubas entre Mitre y España).</li><li>Deberá concurrir con un acompañante con licencia vigente.</li><li>Presentar original y copia de seguro al día y cédula de identificación del vehículo.</li></ul>
+<h4>IMPORTANTE</h4>
+<ul><li>Si padece alguna enfermedad crónica o discapacidad, presentar certificado de aptitud emitido por el médico especialista.</li><li>La gestión sólo procederá si posee en su último documento domicilio en la Ciudad de Mendoza.</li><li>Según la Ley Nacional 24.449, todo conductor debe poseer la capacidad de leer (en caso de categorías particulares) y escribir (en caso de profesionales).</li><li>MODIFICACIÓN DE DATOS: Según Art. 18 - Ley Nacional N° 24.449 la lic. de conducir que presente diferencias de datos en relación a su DNI pasados los 90 días de realizado dicho cambio, el solicitante debe rendir examen teórico, como así también examen de idoneidad conductiva.</li></ul>
+</div>
+
+<div id="lic-ampl-prof" class="item" hidden>
+  <h3>Ampliación profesional</h3>
+  <p>Asunto: Licencia de conducir - Ciudad de Mendoza</p>
+<p>Su turno es el día //2025 a las 00:00hs. en la Municipalidad de la Ciudad de Mendoza , 9 de Julio 500 - Ciudad.</p>
+<p>PARA OBTENER CATEGORÍAS PROFESIONALES ES NECESARIO TENER 21 AÑOS O MÁS Y ACREDITAR UNA ANTIGÜEDAD MÍNIMA DE 1 AÑO EN CAT. B1.</p>
+<h4>Documentación a presentar</h4>
+<ul><li>Original y copia del DNI.</li><li>Licencia anterior</li><li>Certificado del Curso Nacional de Educación Vial impreso. (incluidos Género y Estrellas amarillas) https://curso.seguridadvial.gob.ar/ansv/  o de forma presencial, con turno, los días lunes o miércoles de 12:00 a 17:00h, en la  Municipalidad de la Ciudad de Mendoza .</li><li>Estudios médicos (hemograma, glucemia, uremia, electrocardiograma con informe y certificados de aptitud médica y psicológica o psiquiátrica para conducir). Validez 90 días.</li><li>Boleta adjunta de  Tasa Administrativa Municipal y CENAT (Este lo recibirá en otro mail, bajo el asunto: BOLETA DE PAGO), con comprobantes de pago todo impreso.</li></ul>
+<p>IMPORTANTE: Antes de abonar el boleto de pago Cenat, verificar que los datos sean exactamente iguales a los de su documento de identidad, de haber errores, este no podrá utilizarse y lo deberá volver a abonar.</p>
+<ul><li>Para categoría “D” (transporte de pasajeros), presentar Certificado de Reincidencia (antecedentes penales) impreso. Validez 30 días.</li><li>Si se le informaron multas pendientes, presentar original y copia de comprobantes de regularización.</li></ul>
+<h4>Examen teórico</h4>
+<p>Se evaluará el contenido del Curso Nacional y el del Compendio de Ley Provincial 9024.</p>
+<h4>Prueba de manejo</h4>
+<ul><li>Lun a Vier de 9:00 a 13:00hs en Nave Cultural (calle Las cubas entre Mitre y España).</li><li>Deberá concurrir con un acompañante con licencia vigente.</li><li>Presentar original y copia de seguro al día y cédula de identificación del vehículo.</li></ul>
+<h4>IMPORTANTE</h4>
+<ul><li>Si padece alguna enfermedad crónica o discapacidad, presentar certificado de aptitud emitido por el médico especialista.</li><li>La gestión de su licencia sólo procederá si posee en su último documento domicilio en la Ciudad de Mendoza.</li><li>El arancel CENAT puede demorar hasta 72hs hábiles en la acreditación según el medio de pago y, sin ello, no procederá el trámite. Mercado Pago y Pago Fácil, hasta el momento, acreditan en el acto. Además, una vez pagado, tiene validez por 60 días.</li><li>Se sugiere no utilizar la opción de pago 360, por demoras en la acreditación.</li><li>Dando cumplimiento a la ordenanza municipal 3967 adhiriendo a la Ley provincial 6879 y su modificatoria Ley 8326 si la persona se encuentra registrada como deudor/a alimentario no podremos emitir licencia de conducir hasta regularizar la situación.</li><li>Según la Ley Nacional 24.449, todo conductor debe poseer la capacidad de leer (en caso de categorías particulares) y escribir (en caso de profesionales).</li><li>MODIFICACIÓN DE DATOS: Según Art. 18 - Ley Nacional N° 24.449 la lic. de conducir que presente diferencias de datos en relación a su DNI pasados los 90 días de realizado dicho cambio, el solicitante debe rendir examen teórico, como así también examen de idoneidad conductiva.</li></ul>
+</div>
+
+<div id="lic-ampl-prof-fuerza" class="item" hidden>
+  <h3>Ampliación profesional. Fuerza pública provincial</h3>
+  <p>Asunto: Licencia de conducir - Ciudad de Mendoza</p>
+<p>Previo al turno deberá realizar e l Curso Nacional de Educación Vial al que podrá acceder aquí:</p>
+<p>https://curso.seguridadvial.gob.ar/ansv/  o de forma presencial, con turno, los días lunes o miércoles de 12:00 a 17:00h, en la  Municipalidad de la Ciudad de Mendoza .</p>
+<p>Su turno es el día //2025 a las 00:00hs. en la  Municipalidad de la Ciudad de Mendoza , 9 de Julio 500 - Ciudad.</p>
+<p>PARA OBTENER CATEGORÍAS PROFESIONALES SIENDO MIEMBRO DE LAS FUERZAS PÚBLICAS PROVINCIALES, ES NECESARIO SER MAYOR DE 21 AÑOS.</p>
+<h4>Documentación a presentar</h4>
+<ul><li>Original y copia del DNI</li><li>Licencia anterior</li><li>Certificado del Curso Nacional de Educación Vial impreso.</li><li>Nota del Ministerio de Seguridad que acredite que es chofer de las fuerzas de seguridad. Esto lo exime de la Tasa Administrativa Municipal.</li><li>Estudios médicos (hemograma, glucemia, uremia, electrocardiograma con informe y certificados de aptitud médica y psicológica o psiquiátrica para conducir). Validez 90 días.asu</li><li>Boleta CENAT (Este lo recibirá en otro mail, bajo el nto: BOLETA DE PAGO), con comprobante de pago todo impreso.</li></ul>
+<p>IMPORTANTE: Antes de abonar el boleto de pago Cenat, verificar que los datos sean exactamente iguales a los de su documento de identidad, de haber errores, este no podrá utilizarse y lo deberá volver a abonar.</p>
+<ul><li>Para categoría “D” (transporte de pasajeros), presentar Certificado de Reincidencia (antecedentes penales) impreso. Validez 30 días.</li><li>Si se le informaron multas pendientes, presentar original y copia de comprobantes de regularización.</li></ul>
+<h4>Examen teórico</h4>
+<p>Se evaluará el contenido del Curso Nacional y el del  Compendio de Ley Provincial 9024.</p>
+<h4>Prueba de manejo</h4>
+<p>Se le eximirá si presenta certificado de curso de manejo del Ministerio de Seguridad.</p>
+<ul><li>Lun a Vier de 9:00 a 13:00hs en Nave Cultural (calle Las cubas entre Mitre y España).</li><li>Deberá concurrir con un acompañante con licencia vigente.</li><li>Presentar original y copia de seguro al día y cédula de identificación del vehículo.</li></ul>
+<h4>IMPORTANTE</h4>
+<ul><li>Si padece alguna enfermedad crónica o discapacidad, presentar certificado de aptitud emitido por el médico especialista.</li><li>La gestión de su licencia solo procederá si posee en su último documento domicilio en la Ciudad de Mendoza.</li><li>El arancel CENAT puede demorar hasta 72hs hábiles en la acreditación según el medio de pago y, sin ello, no procederá el trámite. Mercado Pago y Pago Fácil, hasta el momento, acreditan en el acto. Además, una vez pagado, tiene validez por 60 días.</li><li>Se sugiere no utilizar la opción de pago 360, por demoras en la acreditación.</li><li>Dando cumplimiento a la ordenanza municipal 3967 adhiriendo a la Ley provincial 6879 y su modificatoria Ley 8326 si la persona se encuentra registrada como deudor/a alimentario no podremos emitir licencia de conducir hasta regularizar la situación.</li><li>Según la Ley Nacional 24.449, todo conductor debe poseer la capacidad de leer (en caso de categorías particulares) y escribir (en caso de profesionales).</li><li>MODIFICACIÓN DE DATOS: Según Art. 18 - Ley Nacional N° 24.449 la lic. de conducir que presente diferencias de datos en relación a su DNI pasados los 90 días de realizado dicho cambio, el solicitante debe rendir examen teórico, como así también examen de idoneidad conductiva.</li></ul>
+</div>
+
+<div id="lic-ampl-prof-porte" class="item" hidden>
+  <h3>Ampliación profesional. Vehículo de gran porte o maquinaria</h3>
+  <p>Asunto: Licencia de conducir - Ciudad de Mendoza</p>
+<p>Previo al turno deberá realizar el Curso Nacional de Educación Vial al que podrá acceder aquí:</p>
+<p>https://curso.seguridadvial.gob.ar/ansv/  o de forma presencial, con turno, los días lunes o miércoles de 12:00 a 17:00h, en la Municipalidad de la Ciudad de Mendoza .</p>
+<p>Su turno es el día //2025 a las 00:00hs. en la Municipalidad de la Ciudad de Mendoza , 9 de Julio 500 - Ciudad.</p>
+<p>PARA OBTENER CATEGORÍAS PROFESIONALES ES NECESARIO TENER 21 AÑOS O MÁS Y ACREDITAR UNA ANTIGÜEDAD MÍNIMA DE 1 AÑO EN CAT. B1.</p>
+<h4>Documentación a presentar</h4>
+<ul><li>Original y copia del DNI</li><li>Licencia anterior</li><li>Certificado del Curso Nacional de Educación Vial impreso.</li><li>Estudios médicos (hemograma, glucemia, uremia, electrocardiograma con informe y certificados de aptitud médica y psicológica o psiquiátrica para conducir). Validez 90 días.</li><li>Boleta adjunta de  Tasa Administrativa Municipal y CENAT (Este lo recibirá en otro mail, bajo el asunto: BOLETA DE PAGO), con comprobantes de pago todo impreso.</li></ul>
+<p>IMPORTANTE: Antes de abonar el boleto de pago Cenat, verificar que los datos sean exactamente iguales a los de su documento de identidad, de haber errores, este no podrá utilizarse y lo deberá volver a abonar.</p>
+<ul><li>Para categoría “D” (transporte de pasajeros), presentar Certificado de Reincidencia (antecedentes penales) impreso. Validez 30 días.</li><li>En caso de rendir con tráiler, debe estar homologado (para mayor información consultar: Aquí) e incluido en la póliza del seguro del vehículo.</li><li>Si se le informaron multas pendientes, presentar original y copia de comprobantes de regularización.</li></ul>
+<h4>Examen teórico</h4>
+<p>Se evaluará el contenido del Curso Nacional y el del Compendio de Ley Provincial 9024.</p>
+<h4>Prueba de manejo</h4>
+<ul><li>Lun a Vier de 9:00 a 13:00hs en Nave Cultural (calle Las cubas entre Mitre y España).</li><li>Deberá concurrir con un acompañante con licencia vigente.</li><li>Presentar original y copia de seguro al día y cédula de identificación del vehículo.</li></ul>
+<h4>IMPORTANTE</h4>
+<ul><li>Si padece alguna enfermedad crónica o discapacidad, presentar certificado de aptitud emitido por el médico especialista.</li><li>La gestión de su licencia solo procederá si posee en su último documento domicilio en la Ciudad de Mendoza.</li><li>El arancel CENAT puede demorar hasta 72hs hábiles en la acreditación según el medio de pago y, sin ello, no procederá el trámite. Mercado Pago y Pago Fácil, hasta el momento, acreditan en el acto. Además, una vez pagado, tiene validez por 60 días.</li><li>Se sugiere no utilizar la opción de pago 360, por demoras en la acreditación.</li><li>Dando cumplimiento a la ordenanza municipal 3967 adhiriendo a la Ley provincial 6879 y su modificatoria Ley 8326 si la persona se encuentra registrada como deudor/a alimentario no podremos emitir licencia de conducir hasta regularizar la situación.</li><li>Según la Ley Nacional 24.449, todo conductor debe poseer la capacidad de leer (en caso de categorías particulares) y escribir (en caso de profesionales).</li><li>MODIFICACIÓN DE DATOS: Según Art. 18 - Ley Nacional N° 24.449 la lic. de conducir que presente diferencias de datos en relación a su DNI pasados los 90 días de realizado dicho cambio, el solicitante debe rendir examen teórico, como así también examen de idoneidad conductiva.</li></ul>
+</div>
+
+<div id="lic-ampl-part" class="item" hidden>
+  <h3>Ampliación particular</h3>
+  <p>Asunto: Licencia de conducir - Ciudad de Mendoza</p>
+<h4>Estimado/a</h4>
+<p>En caso que corresponda examen teórico según categorías, previo al turno deberá realizar el Curso Nacional de Educación Vial al que podrá acceder aquí: https://curso.seguridadvial.gob.ar/ansv/  o de forma presencial, con turno, los días lunes o miércoles de 12:00 a 17:00h, en la Municipalidad de la Ciudad de Mendoza .</p>
+<p>Su turno es el día //2025 a las 00:00hs. en la Municipalidad de la Ciudad de Mendoza , 9 de Julio 500 - Ciudad.</p>
+<h4>Documentación a presentar</h4>
+<ul><li>Original y copia del DNI</li><li>Licencia anterior</li><li>Boleta adjunta de  Tasa Administrativa Municipal y CENAT (Este lo recibirá en otro mail, bajo el asunto: BOLETA DE PAGO), con comprobantes de pago todo impreso.</li></ul>
+<p>IMPORTANTE: Antes de abonar el boleto de pago Cenat, verificar que los datos sean exactamente iguales a los de su documento de identidad, de haber errores, este no podrá utilizarse y lo deberá volver a abonar.</p>
+<ul><li>Certificado/s impreso/s de asistencia al/los curso/s Curso Nacional de Educación Vial (incluidos Género y Estrellas amarillas) o comprobante de asistencia al curso presencial.</li><li>Si se le informaron multas pendientes, presentar original y copia de comprobantes de regularización.</li></ul>
+<h4>Examen teórico (en caso que corresponda según categorías)</h4>
+<p>Se evaluará el contenido del Curso Nacional y el del Compendio de Ley Provincial 9024.</p>
+<ul><li>Presentar Certificado del curso realizado (on-line o presencial).</li></ul>
+<h4>Prueba de manejo</h4>
+<ul><li>Lun a Vier de 9:00 a 13:00hs en Nave Cultural (calle Las cubas entre Mitre y España).</li><li>Deberá concurrir con un acompañante con licencia vigente.</li><li>Presentar original y copia de seguro al día y cédula de identificación del vehículo.</li></ul>
+<h4>IMPORTANTE</h4>
+<ul><li>Si padece alguna enfermedad crónica o discapacidad, presentar certificado de aptitud emitido por el médico especialista.</li><li>La gestión de su licencia solo procederá si posee en su último documento domicilio en la Ciudad de Mendoza.</li><li>El arancel CENAT puede demorar hasta 72hs hábiles en la acreditación según el medio de pago y, sin ello, no procederá el trámite. Mercado Pago y Pago Fácil, hasta el momento, acreditan en el acto. Además, una vez pagado, tiene validez por 60 días.</li><li>Se sugiere no utilizar la opción de pago 360, por demoras en la acreditación.</li><li>Dando cumplimiento a la ordenanza municipal 3967 adhiriendo a la Ley provincial 6879 y su modificatoria Ley 8326 si la persona se encuentra registrada como deudor/a alimentario no podremos emitir licencia de conducir hasta regularizar la situación.</li><li>Según la Ley Nacional 24.449, todo conductor debe poseer la capacidad de leer (en caso de categorías particulares) y escribir (en caso de profesionales).</li><li>MODIFICACIÓN DE DATOS: Según Art. 18 - Ley Nacional N° 24.449 la lic. de conducir que presente diferencias de datos en relación a su DNI pasados los 90 días de realizado dicho cambio, el solicitante debe rendir examen teórico, como así también examen de idoneidad conductiva.</li></ul>
+</div>
+
+<div id="lic-duplicado" class="item" hidden>
+  <h3>Duplicado (por cambio de datos, extravío o robo)</h3>
+  <p>Asunto: Licencia de conducir - Ciudad de Mendoza</p>
+<p>Su turno es el día //2025 a las 00:00hs. en la Municipalidad de la Ciudad de Mendoza , 9 de Julio 500 - Ciudad.</p>
+<h4>Documentación a presentar</h4>
+<ul><li>Original y copia del DNI</li><li>Licencia actual a modificar o, de no tenerla, certificado de extravío o denuncia de robo.</li><li>Boleta adjunta de  Tasa Administrativa Municipal y CENAT (Este lo recibirá en otro mail, bajo el asunto: BOLETA DE PAGO), con comprobantes de pago todo impreso.</li></ul>
+<p>IMPORTANTE: Antes de abonar el boleto de pago Cenat, verificar que los datos sean exactamente iguales a los de su documento de identidad, de haber errores, este no podrá utilizarse y lo deberá volver a abonar.</p>
+<ul><li>Si se le informaron multas pendientes, presentar original y copia de comprobantes de regularización.</li></ul>
+<p>(Si es mayor de 66 años)</p>
+<ul><li>Estudios médicos (hemograma, glucemia, uremia, electrocardiograma con informe y certificado médico de aptitud para conducir). Validez 90 días. En caso de utilizar audífono, debe agregar certificado de grado de hipoacusia.</li><li>(Si es profesional) Estudios médicos (hemograma, glucemia, uremia, electrocardiograma con informe y certificados de aptitud médica y psicológica o psiquiátrica para conducir). Validez 90 días.</li><li>(Si es profesional con clase D) Certificado de Reincidencia (antecedentes penales) impreso. Validez 30 días.</li></ul>
+<h4>IMPORTANTE</h4>
+<ul><li>Si padece alguna enfermedad crónica o discapacidad, presentar certificado de aptitud emitido por el médico especialista.</li><li>Se mantiene la vigencia de la licencia anterior.</li><li>La gestión de su licencia solo procederá si posee en su último documento domicilio en la Ciudad de Mendoza.</li><li>El arancel CENAT puede demorar hasta 72hs hábiles en la acreditación según el medio de pago y, sin ello, no procederá el trámite. Mercado Pago y Pago Fácil, hasta el momento, acreditan en el acto. Además, una vez pagado, tiene validez por 60 días.</li><li>Se sugiere no utilizar la opción de pago 360, por demoras en la acreditación.</li><li>Dando cumplimiento a la ordenanza municipal 3967 adhiriendo a la Ley provincial 6879 y su modificatoria Ley 8326 si la persona se encuentra registrada como deudor/a alimentario no podremos emitir licencia de conducir hasta regularizar la situación.</li><li>Según la Ley Nacional 24.449, todo conductor debe poseer la capacidad de leer (en caso de categorías particulares) y escribir (en caso de profesionales).</li><li>MODIFICACIÓN DE DATOS: Según Art. 18 - Ley Nacional N° 24.449 la lic. de conducir que presente diferencias de datos en relación a su DNI pasados los 90 días de realizado dicho cambio, el solicitante debe rendir examen teórico, como así también examen de idoneidad conductiva.</li></ul>
+<p>Agregados Diplomáticos (Consulados y embajadas)</p>
+<p>Asunto: Licencia de conducir - Ciudad de Mendoza</p>
+<p>Su turno es el día //2025 a las 00:00hs. en la Municipalidad de la Ciudad de Mendoza , 9 de Julio 500 - Ciudad.</p>
+<h4>Documentación a presentar</h4>
+<ul><li>Original y copia del DNI o pasaporte.</li><li>Credencial de diplomático. La vigencia de esta credencial establecerá la de la licencia de conducir en caso de que sea menor a los plazos normales.</li><li>Licencia de su país de origen. De no poseerla, debe tramitar una licencia original.</li><li>Carta consular por la cual se lo presenta como agregado diplomático.</li><li>Boleta adjunta y comprobante de pago impresos de la Tasa Administrativa Municipal.</li></ul>
+<p>Pago de CENAT EXIMIDO.</p>
+<ul><li>Si se le informaron multas pendientes, presentar original y copia de comprobantes de regularización.</li></ul>
+<h4>IMPORTANTE</h4>
+<ul><li>Si padece alguna enfermedad crónica o discapacidad, presentar certificado de aptitud emitido por el médico especialista.</li><li>La gestión de su licencia solo procederá si posee en su último documento domicilio en la Ciudad de Mendoza.</li><li>Según la Ley Nacional 24.449, todo conductor debe poseer la capacidad de leer (en caso de categorías particulares) y escribir (en caso de profesionales).</li></ul>
+</div>
+
+<div id="lic-canje-chile" class="item" hidden>
+  <h3>Canje de licencia chilena por argentina</h3>
+  <h4>Plantilla de asesoramiento</h4>
+<h4>Estimada/o </h4>
+<p>Para acceder al canje de licencias de conducir para chilenos residentes en Argentina, deberá ingresar al siguiente enlace Acuerdo Argentina-Chile sobre reconocimiento recíproco y canje de Licencias de Conducir y solicitar Certificado de Canje.</p>
+<p>Cumplido esto, solicitar turno para ser atendida/o en nuestro Centro de Emisión de Licencia Nacional de Conducir llamando al 147 o 0800-222-248323 de lunes a viernes de 8 a 20hs o personalmente en los Centros de Atención Municipal y Puntos de Cercanía</p>
+<h4>Plantilla de confirmación de turno</h4>
+<p>Asunto: Licencia de conducir - Ciudad de Mendoza</p>
+<p>Su turno es el día //2025 a las 00:00hs. en la Municipalidad de la Ciudad de Mendoza , 9 de Julio 500 - Ciudad.</p>
+<h4>Documentación a presentar</h4>
+<ul><li>Original y copia del DNI</li><li>Licencia de conducir chilena.</li><li>Certificado de canje de licencia emitido por Agencia Nacional de Seguridad Vial.</li><li>Si solicita clase D, certificado de antecedentes penales.</li><li>Boleta adjunta de  Tasa Administrativa Municipal y CENAT (Este lo recibirá en otro mail, bajo el asunto: BOLETA DE PAGO), con comprobantes de pago todo impreso.</li></ul>
+<p>IMPORTANTE: Antes de abonar el boleto de pago Cenat, verificar que los datos sean exactamente iguales a los de su documento de identidad, de haber errores, este no podrá utilizarse y lo deberá volver a abonar.</p>
+<ul><li>Si se le informaron multas pendientes, presentar original y copia de comprobantes de regularización.</li></ul>
+<h4>IMPORTANTE</h4>
+<ul><li>Si padece alguna enfermedad crónica o discapacidad, presentar certificado de aptitud emitido por el médico especialista.</li><li>La gestión de su licencia solo procederá si posee en su último DNI domicilio en la Ciudad de Mendoza.</li><li>El arancel CENAT puede demorar hasta 72hs hábiles en la acreditación según el medio de pago y, sin ello, no procederá el trámite. Mercado Pago y Pago Fácil, hasta el momento, acreditan en el acto. Además, una vez pagado, tiene validez por 60 días.</li><li>Se sugiere no utilizar la opción de pago 360, por demoras en la acreditación.</li><li>Según la Ley Nacional 24.449, todo conductor debe poseer la capacidad de leer (en caso de categorías particulares) y escribir (en caso de profesionales).</li></ul>
+</div>
+
+<div id="lic-canje-eu" class="item" hidden>
+  <h3>Canje de licencia española/italiana por argentina</h3>
+  <p>Asunto: Licencia de conducir - Ciudad de Mendoza</p>
+<p>Su turno es el día //2025 a las 00:00hs. en la Municipalidad de la Ciudad de Mendoza , 9 de Julio 500 - Ciudad.</p>
+<h4>Documentación a presentar</h4>
+<ul><li>Original y copia del DNI o residencia temporaria con número de dni asignado.</li><li>Licencia anterior a canjear (Debe estar vigente)</li><li>Certificado de legalidad original (traducido al español en licencia Italiana)</li><li>Apostillado de la Haya</li><li>Boleta adjunta de  Tasa Administrativa Municipal y CENAT (Este lo recibirá en otro mail, bajo el asunto: BOLETA DE PAGO), con comprobantes de pago todo impreso.</li></ul>
+<p>IMPORTANTE: Antes de abonar el boleto de pago Cenat, verificar que los datos sean exactamente iguales a los de su documento de identidad, de haber errores, este no podrá utilizarse y lo deberá volver a abonar.</p>
+<ul><li>Si se le informaron multas pendientes, presentar original y copia de comprobantes de regularización.</li></ul>
+<h4>IMPORTANTE</h4>
+<ul><li>Si padece alguna enfermedad crónica o discapacidad, presentar certificado de aptitud emitido por el médico especialista.</li><li>La gestión de su licencia sólo procederá si posee en su último documento domicilio en la Ciudad de Mendoza.</li><li>El arancel CENAT puede demorar hasta 72 hs hábiles en la acreditación según el medio de pago y, sin ello, no procederá el trámite. Mercado Pago y Pago Fácil, hasta el momento, acreditan en el acto. Además, una vez pagado, tiene validez por 60 días.</li><li>Se sugiere no utilizar la opción de pago 360, por demoras en la acreditación.</li><li>Según la Ley Nacional 24.449, todo conductor debe poseer la capacidad de leer (en caso de categorías particulares) y escribir (en caso de profesionales).</li></ul>
+<p>SALUD ANIMAL</p>
+<h4>CONSULTAS, VACUNACIÓN ANTIRRÁBICA y DESPARASITACIÓN</h4>
+<p>Dirigirse sin turno los siguientes días y horarios</p>
+<ul><li>Centro Veterinario Municipal de La Favorita: Lunes y viernes de 8 a 12:30 hs.</li><li>Móvil Veterinario: Lunes a jueves a las 14:00 hs en el lugar que esté ese día.</li></ul>
+<h4>REQUISITOS PARA LA ASISTENCIA VETERINARIA DE CASTRACIÓN</h4>
+<p>Acreditar domicilio en la Ciudad de Mendoza con su DNI, contrato de alquiler o boleta de servicio municipal, teniendo que estar a nombre del titular del turno en cualquiera de los casos.</p>
+<p>Se castrarán animales de 5 meses (FELINOS) y 6 meses (CANINOS) hasta 5 años en ambos casos.</p>
+<p>Se deberá asistir a las 14:00 horas para la correcta preparación del animal.</p>
+<p>Los animales deberán ser transportados de forma segura. Para el caso de perros es necesario portar correa y bozal. En el caso de gatos, canil o una caja.</p>
+<p>Se solicita seguir las medidas de seguridad con las que se asiste, teniendo presente el lugar de público de atención, con actividades compartidas, especialmente con menores.</p>
+<p>El turno solicitado es INTRANSFERIBLE, y se atenderá únicamente acreditando domicilio en el Departamento de Ciudad.</p>
+<h4>NO se realizarán castraciones en los siguientes casos</h4>
+<p>Animales con sobrepeso o en estado de caquexia (bajo peso, anémicos).</p>
+<p>Perras en celo.</p>
+<p>Animales con patologías preexistentes.</p>
+<p>Caniches y animales con problemas respiratorios o de razas braquiocefálicas (de nariz corta) como bulldog, pekinés, bóxer.</p>
+<h4>Preparación del animal</h4>
+<p>8 horas de ayuno de sólidos y líquidos.</p>
+<p>LA EFECTIVA REALIZACIÓN DE LA CIRUGÍA QUEDA A CRITERIO DEL PROFESIONAL A CARGO.</p>
+<p>En caso de no poder asistir, cancelar el turno, llamando al 147 o escribiendo a contacto@ciudaddemendoza.gov.ar</p>
+</div>
+
+<div id="lic-lnc-digital" class="item" hidden>
+  <h3>Licencia Nacional de Conducir Digital – Categoría Profesional Interjurisdiccional</h3>
+  <h4>Estimado/a</h4>
+<p>Le informamos que, para iniciar el trámite de la Licencia Nacional de Conducir Digital – Categoría Profesional Interjurisdiccional, deberá ingresar al siguiente enlace:</p>
+<p>https://lncargentina.seguridadvial.gob.ar</p>
+<p>En caso de consultas o inconvenientes durante el proceso, puede comunicarse directamente al siguiente correo electrónico:</p>
+<p>ayudalncprofesional@seguridadvial.gob.ar</p>
+<p>Asimismo, le compartimos un video tutorial que lo guiará paso a paso en la realización del trámite:
+https://youtu.be/T1HXdpfTa9g?si=_EZtveWCBq1FNnQZ</p>
+<p>Una vez finalizado el trámite y obtenida la nueva licencia digital, usted podrá optar por solicitar la impresión del plástico. Para ello, deberá agendar un turno previo.</p>
+<p>Agradecemos su contacto</p>
+</div>
+
+<div id="lic-asesoria" class="item" hidden>
+  <h3>Asesoramiento y/o impresiones</h3>
+  <p>Asunto: Licencia de conducir - Ciudad de Mendoza</p>
+<p>Su turno es el día //2025 a las 00:00hs. en la Municipalidad de la Ciudad de Mendoza , 9 de Julio 500 - Ciudad.</p>
+<h4>Documentación a presentar</h4>
+<ul><li>Original del DNI</li><li>Licencia de conducir (si posee la física)</li><li>Aplicación Mi Argentina, descargada y activa</li><li>Número de trámite otorgado por la aplicación Mi Argentina</li></ul>
+<p>En caso de avanzar con el trámite en nuestro Centro de Emisión, se podrá  solicitar el pago de los aranceles correspondientes.</p>
+<p>Eximición estacionamiento Juan B Justo</p>
+<p>El intendente Ulpiano Suarez, dispuso un beneficio especial para los vecinos frentistas de la Av. Juan B Justo: quienes tengan sus tasas municipales por servicios a la propiedad raíz al día podrán registrar un vehículo y quedar exento del pago de estacionamiento en la mencionada avenida.</p>
+<p>Para poder ingresar la solicitud del mismo tiene que enviar los siguientes datos a contacto@ciudaddemendoza.gov.ar:</p>
+<ul><li>Padrón municipal</li><li>Relación con el inmueble (propietario, inquilino)</li><li>Titular del vehículo</li><li>DNI</li><li>Patente</li><li>Marca y modelo</li></ul>
+</div>
+
+        <!-- Links útiles (LNC) -->
+        <div class="notice">
+          <b>Links útiles:</b>
+          <div class="row">
+            <a class="linkbtn" href="https://lncargentina.seguridadvial.gob.ar" target="_blank" rel="noopener">Portal LNC Argentina</a>
+            <a class="linkbtn" href="https://youtu.be/T1HXdpfTa9g?si=_EZtveWCBq1FNnQZ" target="_blank" rel="noopener">Tutorial</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SALUD ANIMAL (base) -->
+    <section id="salud-animal" class="panel" aria-label="Panel Salud Animal">
+      <header><h2>🐾 Salud Animal</h2></header>
+      <div class="content">
+        <p>Si querés, también puedo volcar acá <b>todas las plantillas de Salud Animal</b> (vacunación / desparasitación / castración / cancelación), igual que en Licencias.</p>
+        <p class="muted">Por ahora lo dejamos como sección placeholder para no mezclar.</p>
+      </div>
+    </section>
+
+    <!-- CAM -->
+    <section id="cam" class="panel" aria-label="Panel CAM">
+      <header><h2>🏛️ CAM y Puntos de Cercanía</h2></header>
+      <div class="content">
+        <div class="notice"><b>Horario:</b> lunes a viernes 08:30 a 13:30 hs.</div>
+
+        <h3>📍 Punto de Cercanía 4ta. Sección</h3>
+        <p><b>Dirección:</b> San Martín 2981 (entre Gobernador González y Soler)</p>
+        <p><b>Teléfono:</b> (0261) 4374712</p>
+        <div class="row"><a class="linkbtn" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=San%20Mart%C3%ADn%202981%20Ciudad%20de%20Mendoza">Abrir en Maps</a></div>
+
+        <h3>📍 Centro de Atención Municipal 5ta. Sección (Gimnasio Nº 1)</h3>
+        <p><b>Dirección:</b> Paso de los Andes y Sobremonte</p>
+        <p><b>Teléfono:</b> (0261) 4495117</p>
+        <div class="row"><a class="linkbtn" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=Paso%20de%20los%20Andes%20y%20Sobremonte%20Ciudad%20de%20Mendoza">Abrir en Maps</a></div>
+
+        <h3>📍 Punto de Cercanía 6ta. Sección</h3>
+        <p><b>Dirección:</b> Alpatacal 3151</p>
+        <p><b>Teléfono:</b> (0261) 4251496</p>
+        <div class="row"><a class="linkbtn" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=Alpatacal%203151%20Ciudad%20de%20Mendoza">Abrir en Maps</a></div>
+
+        <h3>📍 Punto de Cercanía La Favorita</h3>
+        <p><b>Dirección:</b> Las Verbenas y Los Junquillos, Bº Alto Mendoza</p>
+        <p><b>Teléfono:</b> 4448844</p>
+        <div class="row"><a class="linkbtn" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=Las%20Verbenas%20y%20Los%20Junquillos%20Alto%20Mendoza%20Ciudad%20de%20Mendoza">Abrir en Maps</a></div>
+
+        <h3>📍 Punto de Cercanía Sanidad</h3>
+        <p><b>Dirección:</b> Dr. Metraux 3061, B° Sanidad</p>
+        <p><b>Teléfono:</b> 4615537</p>
+        <div class="row"><a class="linkbtn" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=Dr.%20Metraux%203061%20B%C2%B0%20Sanidad%20Ciudad%20de%20Mendoza">Abrir en Maps</a></div>
+
+        <h3>📍 Punto de Cercanía B° Cano</h3>
+        <div class="notice" style="border-left-color:#ffb020;background:rgba(255,176,32,.10);border-color:rgba(255,176,32,.25);">
+          <b>Estado:</b> Se encuentra <b>temporalmente cerrado</b>.
+        </div>
+        <p><b>Dirección:</b> Paseo Venezuela (Boulogne Sur Mer, entre Los Alerces y Los Tilos), B° Cano</p>
+        <div class="row"><a class="linkbtn" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=Paseo%20Venezuela%20Boulogne%20Sur%20Mer%20Los%20Alerces%20Los%20Tilos%20Barrio%20Cano%20Ciudad%20de%20Mendoza">Abrir en Maps</a></div>
+      </div>
+    </section>
+
+    <!-- CONTACTOS -->
+    <section id="contactos" class="panel" aria-label="Panel Contactos">
+      <header><h2>☎️ Contactos útiles</h2></header>
+      <div class="content">
+        <ul>
+          <li><b>0800-222-CIUDAD (248323):</b> consultas, reclamos y sugerencias.</li>
+          <li><b>147:</b> trámites y servicios.</li>
+          <li><b>Email:</b> contacto@ciudaddemendoza.gob.ar</li>
+        </ul>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    Hecho para GitHub Pages. Guardá este archivo como <code>index.html</code>.
+  </footer>
+
+  <script>
+    function openPanel(id){
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      const panel = document.getElementById(id);
+      if(panel){ panel.classList.add('active'); panel.scrollIntoView({behavior:'smooth', block:'start'}); }
+    }
+
+    function hideAllItems(prefix){
+      document.querySelectorAll('[id^="'+prefix+'-"]').forEach(el=>{
+        if(el.classList.contains('item')) el.hidden = true;
+      });
+    }
+
+    function showItem(prefix, key){
+      hideAllItems(prefix);
+      const el = document.getElementById(prefix+'-'+key);
+      if(el) el.hidden = false;
+    }
+
+    function filterChips(group, query){
+      query = (query||'').toLowerCase().trim();
+      const chips = document.querySelectorAll('.chip[data-group="'+group+'"]');
+      chips.forEach(ch=>{
+        const t = ch.textContent.toLowerCase();
+        ch.style.display = (!query || t.includes(query)) ? 'inline-flex' : 'none';
+      });
+    }
+
+    // Abrir licencias por defecto
+    openPanel('licencias');
+    showItem('lic','original');
+  </script>
+</body>
+</html>
